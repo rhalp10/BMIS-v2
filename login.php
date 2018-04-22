@@ -33,6 +33,7 @@ if (isset($_POST['submit'])) {
 				{
 					$_SESSION['user_session'] = $data['acc_ID'];
 					$_SESSION['official_ID'] = $data['official_ID'];
+					$_SESSION['position'] ="Barangay Secretary";
 					 header("location: admin/index.php");
 				}
 				else

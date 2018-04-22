@@ -292,6 +292,9 @@ $user_data = mysqli_fetch_array($user_sql);
                 <div class="sidebar-header text-center">
                     <h6>WELCOME</h6>
                     <?php 
+                    echo "<pre>";
+                    echo var_dump($_SESSION);
+                    echo "</pre>";
                     if (isset($user_data['res_Img'])) {
                         $img  = $user_data['res_Img'];
                         ?>
@@ -313,7 +316,7 @@ $user_data = mysqli_fetch_array($user_sql);
                       else{
                          $suffix = $user_data['suffix'];
                       }
-                    echo $user_data['res_fName']." ".$user_data['res_mName']." ".$user_data['res_lName']." ".$suffix ?></h3>
+                    echo $_SESSION['Full_Name'] = $user_data['res_fName']." ".$user_data['res_mName']." ".$user_data['res_lName']." ".$suffix ?></h3>
                     <h6><?php  echo $user_data['position_Name']?></h6>
                 </div>
 

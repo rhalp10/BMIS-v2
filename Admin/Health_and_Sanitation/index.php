@@ -1,91 +1,110 @@
 <?php
-session_start();
-require('db.php');
+include("../../connection.php");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>View Records</title>
-
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title>Home - Barangay Management Information System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../../bootstrap-3.3.7/dist/css/bootstrap.min.css">
+    <script src="../../bootstrap-3.3.7/dist/js/jquery-1.12.4.min.js"></script>
+    <script src="../../bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>
+    <link rel="shortcut icon" href="../../Img/Icon/indang logo.png">
+    <link rel="stylesheet" type="text/css" href="../../DataTables/datatables.min.css"/>
+    <script type="text/javascript" src="../../DataTables/datatables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../custom.css">
+   
 </head>
-<link href="css/design.css" rel="stylesheet" type="text/css"> 
-<body>
-	<div class="label">
-						<div class="nav"  style="background-color: #e94b3c;" >
-<?php
-if ($_SESSION['position']=='Barangay Secretary' OR $_SESSION['position']=='Barangay Health Worker' OR ($_SESSION['position']=='Barangay Councilor' && $_SESSION['committee']=="Health and Sanitation"))
-    echo'
-							<a href="dashboard.php">Insert Record</a>';?>
-							<a href="distribute.php">Drug Distribution</a>
-							<a href="vaccine.php">Vaccination</a>
-							<a href="birth.php">Newborn</a>
-							<a href="pregnant.php">Pregnant</a>
-							<a href="death.php">Death</a>
-						</div>		
+<body >
 
-</div>
-        <center>
-        	<?php
-        	if (isset($_POST['search'])) {
-    $valueToSearch = $_POST['valueToSearch'];
-    // search in all table columns
-    // using concat mysql function
-    $query         = "SELECT * From inventory_drugs_release 
-    INNER JOIN resident_detail ON inventory_drugs_release.res_ID= resident_detail.res_ID 
-    INNER JOIN inventory_drugs ON inventory_drugs_release.drug_ID= inventory_drugs.drug_ID 
-    WHERE CONCAT(`drug_Name`,`res_fName`,`res_mName`,`res_lName`,`drgrelease_Qnty`,`drgrelease_Date_Record`) 
-    LIKE '%".$valueToSearch."%' order by inventory_drugs_release.drgrelease_Date_Record";
-    $search_result = filterTable($query);
-    
-} else {
-    $query         = "SELECT * From inventory_drugs_release 
-    INNER JOIN resident_detail ON inventory_drugs_release.res_ID= resident_detail.res_ID 
-    INNER JOIN inventory_drugs ON inventory_drugs_release.drug_ID= inventory_drugs.drug_ID order by inventory_drugs_release.drgrelease_Date_Record ";
-    $search_result = filterTable($query);
-}
+       <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index">ACCOUNT</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index">Drug Distribution</a></li>
+             <li class=""><a href="index">Vacination</a></li>
+             <li class=""><a href="index">Newboard</a></li>
+             <li class=""><a href="index">Pregnant</a></li>
+             <li class=""><a href="index">Death</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+<div class="container" style="margin-top:120px;">
+  <?php 
 
-// function to connect and execute the query
-function filterTable($query)
-{
-    $connect       = mysqli_connect("localhost", "root", "", "bmis_db");
-    $filter_Result = mysqli_query($connect, $query);
-    return $filter_Result;
-}
+  
+$sql = mysqli_query($conn,"SELECT ua.acc_ID,bod.official_ID,rd.res_fName,rd.res_mName,rd.res_lName,rs.suffix,ua.acc_username,ua.acc_password,us.status_Name FROM `user_account` ua 
+INNER JOIN brgy_official_detail bod ON ua.official_ID = bod.official_ID 
+INNER JOIN resident_detail rd ON bod.res_ID = rd.res_ID 
+LEFT JOIN ref_suffixname rs ON rd.suffix_ID = rs.suffix_ID
+INNER JOIN user_status us ON ua.status_ID = us.status_ID");
 
 ?>
-<br>
-        <h2>Drug Distribution Records</h2>
-
- 			<form action="distribute.php" method="post">
-            <p align="left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="text" name="valueToSearch" placeholder="Value To Search">
-            &nbsp&nbsp&nbsp<input type="submit" name="search" value="Search" ></p>
-
-<table width="85%" border="2" style="border-collapse:collapse;">
-<thead>
-<tr><th><strong>No.</strong></th><th><strong>Name</strong></th><th><strong>Quantity</strong></th><th><strong>Resident's Name</strong></th><th><strong>Date Given</strong></th></tr>
-</thead>
-
-<tbody>
-<?php 
-
-$count=1;
-
-while($row = mysqli_fetch_assoc($search_result)) { ?>
-<tr>
-	<td align="center"><?php echo $count; ?></td>
-	<td align="center"><?php echo $row["drug_Name"]; ?></td>
-	<td align="center"><?php echo $row["drgrelease_Qnty"]; ?></td>
-<td align="center"><?php echo $row["res_fName"]; ?><?php echo" "; ?><?php echo $row["res_mName"]; ?><?php echo " " ?><?php echo $row["res_lName"]; ?></td>
-<td align="center"><?php echo $row["drgrelease_Date_Record"]; ?></td>
-	</tr>
-<?php $count++; }
-
-?>
-</tbody>
-</table>
-<br /><br /><br /><br />
+      <table class="table table-bordered " id="accounts">
+        <thead class="bg-primary">
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody >
+          <?php 
+          while ($acc_data = mysqli_fetch_array($sql)) {
+            $suffix = $acc_data['suffix'];
+            if ($suffix == "N/A") {
+              $suffix = "";
+            }
+            else{
+               $suffix = $acc_data['suffix'];
+            }
+           ?>
+           <tr>
+            <td><?php echo $acc_data['res_fName']." ".$acc_data['res_mName'].". ".$acc_data['res_lName']." ".$suffix ?></td>
+            <td><?php echo $acc_data['acc_username'] ?></td>
+            <td><?php echo $acc_data['acc_password'] ?></td>
+            <td><span class="label label-success"><?php echo $acc_data['status_Name']?></span></td>
+            <td>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">View</a></li>
+                  <li><a href="#">Edit</a></li>
+                  <li><a href="#">Delete</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+           <?php
+          }
+          ?>
+          
+        </tbody>
+      </table>
 </div>
-</center>
+
+<script type="text/javascript">
+$(document).ready( function () {
+    $('#accounts').DataTable();
+} );
+</script>
 </body>
 </html>

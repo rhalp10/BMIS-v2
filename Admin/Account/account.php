@@ -11,10 +11,10 @@ include("../../connection.php");
     <link rel="stylesheet" type="text/css" href="../../bootstrap-3.3.7/dist/css/bootstrap.min.css">
     <script src="../../bootstrap-3.3.7/dist/js/jquery-1.12.4.min.js"></script>
     <script src="../../bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>
-    
     <link rel="shortcut icon" href="../../Img/Icon/indang logo.png">
     <link rel="stylesheet" type="text/css" href="../../DataTables/datatables.min.css"/>
     <script type="text/javascript" src="../../DataTables/datatables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../custom.css">
    
 </head>
 <body >

@@ -11,6 +11,8 @@
     
     <link rel="stylesheet" type="text/css" href="../../DataTables/datatables.min.css"/>
     <script type="text/javascript" src="../../DataTables/datatables.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../custom.css">
     <style type="text/css">
 
 .box h3{
@@ -33,5 +35,6 @@
        -moz-box-shadow: 0 10px 6px -6px #777;
             box-shadow: 0 10px 6px -6px #777;
 }
+
 </style>
 </head>
