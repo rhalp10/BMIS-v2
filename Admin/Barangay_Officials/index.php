@@ -21,7 +21,8 @@ session_start();
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
 
   <link rel="stylesheet" href="../../dhtmlx/diagram/samples/common/dhx_samples.css">
-  <script type="text/javascript" src="../../dhtmlx/diagram/samples/common/data.js"></script>
+  <!-- <script type="text/javascript" src="../../dhtmlx/diagram/samples/common/data.js"></script> -->
+
     <style type="text/css">
       /*Now the CSS*/
 * {margin: 0; padding: 0;}
@@ -60,8 +61,204 @@ LEFT JOIN ref_position rp ON rp.position_ID = bod.commitee_assignID
 WHERE bod. commitee_assignID = 2 AND visibility = 1");
 $cap_data = mysqli_fetch_array($sql);
 $cap_data['res_Img'];
-  ?>
+$suffix = $cap_data['suffix'];
+ if ($suffix == "N/A") {
+   $suffix = "";
+ }
+ else{
+    $suffix = $cap_data['suffix'];
+ }
+
+
+ if (isset($cap_data[7])) {
+     $img  = $cap_data[7];
+     $cimg = "data:image/jpeg;base64,".base64_encode($img);
+     
+ } 
+ else{
+  
+    $cimg = "../../Img/Icon/logo.png";
  
+ }
+ $sql =   mysqli_query($conn,"SELECT * FROM `brgy_official_detail` bod 
+INNER JOIN resident_detail rd ON rd.res_ID = bod.res_ID
+LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID
+LEFT JOIN ref_position rp ON rp.position_ID = bod.commitee_assignID
+WHERE bod. commitee_assignID = 3 AND visibility = 1");
+$sec_data = mysqli_fetch_array($sql);
+$sec_data['res_Img'];
+$suffix1 = $sec_data['suffix'];
+ if ($suffix1 == "N/A") {
+   $suffix1 = "";
+ }
+ else{
+    $suffix1 = $sec_data['suffix'];
+ }
+
+
+ if (isset($sec_data[7])) {
+     $img  = $sec_data[7];
+     $secimg = "data:image/jpeg;base64,".base64_encode($img);
+     
+ } 
+ else{
+  
+    $secimg = "../../Img/Icon/logo.png";
+ 
+ }
+$sql =   mysqli_query($conn,"SELECT * FROM `brgy_official_detail` bod 
+INNER JOIN resident_detail rd ON rd.res_ID = bod.res_ID
+LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID
+LEFT JOIN ref_position rp ON rp.position_ID = bod.commitee_assignID
+WHERE bod. commitee_assignID = 4 AND visibility = 1 ORDER by official_ID DESC");
+$tre_data = mysqli_fetch_array($sql);
+$tre_data['res_Img'];
+$suffix2 = $tre_data['suffix'];
+ if ($suffix2 == "N/A") {
+   $suffix2 = "";
+ }
+ else{
+    $suffix2 = $tre_data['suffix'];
+ }
+
+
+ if (isset($tre_data[7])) {
+     $img  = $tre_data[7];
+     $treimg = "data:image/jpeg;base64,".base64_encode($img);
+     
+ } 
+ else{
+  
+    $treimg = "../../Img/Icon/logo.png";
+ 
+ }
+                
+?>
+ <script type="text/javascript">
+
+var bigOrganogramData = [
+  {
+    "id": "1",
+    "width": 250,
+    "text": "<?php echo $cap_data['position_Name'];?>",
+    "title": "<?php echo $cap_data['res_fName'].' '.$cap_data['res_mName'].' '.$cap_data['res_lName'].' '.$suffix;?>",
+    "img": "<?php echo $cimg;?>"
+  },
+  {
+    "id": "2",
+    "width": 250,
+    "text": "<?php echo $sec_data['position_Name'];?>",
+    "title": "<?php echo $sec_data['res_fName'].' '.$sec_data['res_mName'].' '.$sec_data['res_lName'].' '.$suffix1;?>",
+    "img": "<?php echo $secimg;?>",
+    "parent": 1,
+    "dir": "vertical"
+  },
+  // {
+  //  "id": "2.1",
+  //  "text": "Barangay Treasurer",
+  //  "title": "Charles Little",
+  //  "img": "../common/img/avatar-4.png",
+  //  "parent": 2
+  // },
+  // {
+  //  "id": "2.2",
+  //  "text": "QA",
+  //  "title": "Douglas Riley",
+  //  "img": "../common/img/avatar-9.png",
+  //  "parent": 2
+  // },
+  // {
+  //  "id": "2.3",
+  //  "text": "QA",
+  //  "title": "Eugene Foster",
+  //  "img": "../common/img/avatar-12.png",
+  //  "parent": 2
+  // },
+  {
+    "id": "3",
+    "text": "Barangay Officials",
+    "title": "",
+    "img": "",
+    "parent": 1
+  },
+  
+  {
+    "id": "4",
+    "width": 250,
+    "text": "<?php echo $tre_data['position_Name'];?>",
+    "title": "<?php echo $tre_data['res_fName'].' '.$tre_data['res_mName'].' '.$tre_data['res_lName'].' '.$suffix2;?>",
+    "img": "<?php echo $treimg;?>",
+    "parent": 1,
+    "dir": "vertical"
+  },
+  // {
+  //  "id": "4.1",
+  //  "text": "Marketer",
+  //  "title": "Sandra Butler",
+  //  "img": "../common/img/avatar-6.png",
+  //  "parent": "4"
+  // },
+  // {
+  //  "id": "4.2",
+  //  "text": "Designer",
+  //  "title": "Julie Green",
+  //  "img": "../common/img/avatar-16.png",
+  //  "parent": "4"
+  // },
+  // {
+  //  "id": "4.3",
+  //  "text": "Sales Manager",
+  //  "title": "Richard Hicks",
+  //  "img": "../common/img/avatar-14.png",
+  //  "parent": "4"
+  // },
+  {
+    "id": "3.1",
+    "text": "Barangay Officials in Health Center",
+    "width": 250,
+    "title": "Mark Nichols",
+    "img": "../common/img/avatar-7.png",
+    "parent": 3
+  },
+  {
+    "id": "3.1.1",
+    "text": "Programmer",
+    "title": "Sean Parker",
+    "img": "../common/img/avatar-10.png",
+    "parent": 3.1,
+    "open": false
+  },
+  {
+    "id": "3.1.1.1",
+    "text": "Junior",
+    "title": "Laura Alvarez",
+    "img": "../common/img/avatar-8.png",
+    "parent": "3.1.1"
+  },
+  {
+    "id": "3.2",
+    "text": "Team Lead",
+    "title": "Nicholas Cruz",
+    "img": "../common/img/avatar-13.png",
+    "parent": 3
+  },
+  {
+    "id": "3.2.1",
+    "text": "Programmer",
+    "title": "Michael Shaw",
+    "img": "../common/img/avatar-11.png",
+    "parent": "3.2"
+  },
+  {
+    "id": "3.2.1.1",
+    "text": "Junior",
+    "title": "John Flores",
+    "img": "../common/img/avatar-15.png",
+    "parent": "3.2.1"
+  }
+];
+
+</script>
   <script>
     var diagram = new dhx.Diagram(document.body, { 
       type: "org",
@@ -74,8 +271,6 @@ $cap_data['res_Img'];
 
 
 
-<script type="text/javascript">
 
-</script>
 </body>
 </html>
