@@ -27,38 +27,40 @@ include("../../connection.php");
 
   
 $sql = mysqli_query($conn,"SELECT * From resident_detail rd
-  INNER JOIN resident_pregnant rp ON rp.res_ID= rd.res_ID
-  LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID");
+INNER JOIN resident_newborn rn ON rn.res_ID= rd.res_ID 
+INNER JOIN ref_gender rg ON rg.gender_ID  = rd.gender_ID
+LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID");
 
-?><button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD</button><br><br>
+?>
+<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD</button><br><br>
       <table class="table table-bordered " id="accounts">
         <thead class="bg-primary">
           <tr>
             <th>No</th>
             <th>Name</th>
-            <th>Date of Conception</th>
-            <th>Date Labor</th>
+            <th>Date of Birth</th>
+            <th>Sex</th>
             <th>Date Recorded</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody >
           <?php 
-          while ($preg = mysqli_fetch_array($sql)) {
-            $suffix = $preg['suffix'];
+          while ($new = mysqli_fetch_array($sql)) {
+            $suffix = $new['suffix'];
             if ($suffix == "N/A") {
               $suffix = "";
             }
             else{
-               $suffix = $preg['suffix'];
+               $suffix = $new['suffix'];
             }
            ?>
            <tr>
-            <td><?php echo $preg['preg_ID'] ?></td>
-            <td><?php echo $preg['res_fName']." ".$preg['res_mName'].". ".$preg['res_lName']." ".$suffix ?></td>
-            <td><?php echo $preg['preg_Date'] ?></td>
-            <td><?php echo $preg['preg_Labor'] ?></td>
-            <td><?php echo $preg['preg_Date_Record'] ?></td>
+            <td><?php echo $new['newborn_ID'] ?></td>
+            <td><?php echo $new['res_fName']." ".$new['res_mName'].". ".$distribute['res_lName']." ".$suffix ?></td>
+            <td><?php echo $new['res_Bday'] ?></td>
+            <td><?php echo $new['gender_Name'] ?></td>
+            <td><?php echo $new['newborn_Date_Record'] ?></td>
             <td>
               <div class="btn-group">
                 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>

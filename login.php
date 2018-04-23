@@ -33,7 +33,12 @@ if (isset($_POST['submit'])) {
 				{
 					$_SESSION['user_session'] = $data['acc_ID'];
 					$_SESSION['official_ID'] = $data['official_ID'];
-					$_SESSION['position'] ="Barangay Secretary";
+					$sql = mysqli_query($conn,"SELECT * FROM `brgy_official_detail` bod 
+						inner join ref_position rp ON rp.position_ID = bod.commitee_assignID   
+						WHERE bod.official_ID = ".$data['official_ID']."");
+					$bod = mysqli_fetch_array($sql);
+					$_SESSION['position'] = $bod['position_Name'];
+					$_SESSION['position_ID']  = $bod['commitee_assignID'];
 					 header("location: admin/index.php");
 				}
 				else

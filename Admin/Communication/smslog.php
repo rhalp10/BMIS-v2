@@ -38,20 +38,33 @@ if(!isset($login_session)){
           </tr>
         </thead>
         <tbody >
+          <?php
+          $log = mysqli_query($conn,"SELECT * FROM `sms`
+LEFT JOIN anouncement_raw ar ON ar.ann_ID = sms.ann_ID
+LEFT JOIN resident_contact rc ON rc.contact_ID = sms.contact_ID
+LEFT JOIN ref_position rp ON rp.position_ID = sms.receiver_ID
+LEFT JOIN resident_detail rd ON rd.res_ID  = rc.res_ID
+LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID");
+          while ($log_data = mysqli_fetch_array($log)) {
+          $suffix = $log_data['suffix'];
+            if ($suffix == "N/A") {
+              $suffix = "";
+            }
+            else{
+               $suffix = $log_data['suffix'];
+            }
+          
+           ?>
           <tr>
-            <td>asd</td>
-            <td>asd</td>
-            <td>asd</td>
-            <td>asd</td>
-            <td>asd</td>
+            <td><?php echo $log_data['res_fName']."".$log_data['res_mName']."".$log_data['res_lName']. $suffix?></td>
+            <td><?php echo $log_data['ann_Title']?></td>
+            <td><?php echo $log_data['contact_telnum']?></td>
+            <td><?php echo $log_data['position_Name']?></td>
+            <td><?php echo $log_data['date']?></td>
           </tr>
-          <tr>
-            <td>asd</td>
-            <td>asd</td>
-            <td>asd</td>
-            <td>asd</td>
-            <td>asd</td>
-          </tr>
+          <?php 
+          }
+          ?>
         </tbody>
       </table>
 </div>

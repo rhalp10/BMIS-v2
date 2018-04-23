@@ -26,9 +26,10 @@ include("../../connection.php");
   <?php 
 
   
-$sql = mysqli_query($conn,"SELECT * From resident_detail rd
-  INNER JOIN resident_pregnant rp ON rp.res_ID= rd.res_ID
-  LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID");
+$sql = mysqli_query($conn,"SELECT * From resident_detail rd 
+  INNER JOIN resident_vaccinated rv ON rv.res_ID= rd.res_ID 
+  LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID
+  ");
 
 ?><button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD</button><br><br>
       <table class="table table-bordered " id="accounts">
@@ -36,29 +37,33 @@ $sql = mysqli_query($conn,"SELECT * From resident_detail rd
           <tr>
             <th>No</th>
             <th>Name</th>
-            <th>Date of Conception</th>
-            <th>Date Labor</th>
-            <th>Date Recorded</th>
+            <th>Height(cm)</th>
+            <th>Weight(kg)</th>
+            <th>Date Vaccination</th>
+            <th>Name of Vaccination</th>
+            <th>Date Given</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody >
           <?php 
-          while ($preg = mysqli_fetch_array($sql)) {
-            $suffix = $preg['suffix'];
+          while ($vac = mysqli_fetch_array($sql)) {
+            $suffix = $vac['suffix'];
             if ($suffix == "N/A") {
               $suffix = "";
             }
             else{
-               $suffix = $preg['suffix'];
+               $suffix = $vac['suffix'];
             }
            ?>
            <tr>
-            <td><?php echo $preg['preg_ID'] ?></td>
-            <td><?php echo $preg['res_fName']." ".$preg['res_mName'].". ".$preg['res_lName']." ".$suffix ?></td>
-            <td><?php echo $preg['preg_Date'] ?></td>
-            <td><?php echo $preg['preg_Labor'] ?></td>
-            <td><?php echo $preg['preg_Date_Record'] ?></td>
+            <td><?php echo $vac['vac_ID'] ?></td>
+            <td><?php echo $vac['res_fName']." ".$vac['res_mName'].". ".$vac['res_lName']." ".$suffix ?></td>
+            <td><?php echo $vac['res_Height'] ?></td>
+            <td><?php echo $vac['res_Weight'] ?></td>
+            <td><?php echo $vac['vac_Date'] ?></td>
+            <td><?php echo $vac['vac_Name'] ?></td>
+            <td><?php echo $vac['vac_Date_Recorded'] ?></td>
             <td>
               <div class="btn-group">
                 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>

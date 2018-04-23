@@ -292,9 +292,9 @@ $user_data = mysqli_fetch_array($user_sql);
                 <div class="sidebar-header text-center">
                     <h6>WELCOME</h6>
                     <?php 
-                    echo "<pre>";
-                    echo var_dump($_SESSION);
-                    echo "</pre>";
+                    // echo "<pre>";
+                    // echo var_dump($_SESSION);
+                    // echo "</pre>";
                     if (isset($user_data['res_Img'])) {
                         $img  = $user_data['res_Img'];
                         ?>
@@ -333,16 +333,16 @@ $user_data = mysqli_fetch_array($user_sql);
                         <a  href="Resident_Profiling/index" target = "FraDisplay">Dashboard</a>
                     </li>
                     <li>
-                        <a  href="Account/account" target = "FraDisplay">Account</a>
+                        <a  href="Account/index" target = "FraDisplay">Account</a>
                     </li>
                     <li>
-                        <a  href="communication/index" target = "FraDisplay">Clearance and Forms</a>
+                        <a  href="Clearance_and_Forms/index" target = "FraDisplay">Clearance and Forms</a>
                     </li>
                     <li>
                         <a  href="Health_and_Sanitation/index" target = "FraDisplay">Health and Sanitation</a>
                     </li>
                     <li>
-                        <a  href="communication/index" target = "FraDisplay">Peace and Order</a>
+                        <a  href="Peace_and_Order/incident" target = "FraDisplay">Peace and Order</a>
                     </li>
                     <li>
                         <a  href="Finance/index" target = "FraDisplay">Finance</a>

@@ -1,5 +1,82 @@
 <?php
 include("../../connection.php");
+ 
+          
+    if (isset($_POST['submit-municipalLogo'])) {
+      if ($_FILES["logo"]["size"] == 0) {
+          echo "<script>alert('Please Choose File first!');
+                                    window.location='index.php';
+                                </script>";  
+        }
+
+      else{
+          $logo = addslashes(file_get_contents($_FILES['logo']['tmp_name']));
+          
+          $sql = "UPDATE `ref_logo` SET logo_img='$logo' WHERE logo_Name='Municipal Logo';";
+
+        if (mysqli_query($conn, $sql)) 
+            {
+            echo "<script>alert('Successfully Update!');
+                                    window.location='index.php';
+                                </script>";       
+            }
+        else {
+           echo "<script>alert('Upload Error!  ');
+                                    window.location='index.php';
+                                </script>";  
+            }
+      }
+    }
+     if (isset($_POST['submit-brgypalLogo'])) {
+      if ($_FILES["logo"]["size"] == 0) {
+          echo "<script>alert('Please Choose File first!  ');
+                                    window.location='index.php';
+                                </script>"; }
+      else{
+          $logo = addslashes(file_get_contents($_FILES['logo']['tmp_name']));
+         
+          $sql = "UPDATE `ref_logo` SET logo_img='$logo' WHERE logo_Name='Barangay Logo';";
+
+        if (mysqli_query($conn, $sql)) 
+        {
+            echo "<script>alert('Successfully Update!  ');
+                                    window.location='index.php';
+                                </script>";    
+                                }   
+        else {
+            echo "<script>alert('Upload Error!  ');
+                                    window.location='index.php';
+                                </script>";  
+            }
+      }
+    }
+   
+    if (isset($_POST['submit-brgyInfo'])) {
+        $brgy_Name = $_POST['brgy_name'];
+        $citymun_Name = $_POST['brgy_city'];
+        $province_Name = $_POST['brgy_province'];
+        if(empty($brgy_Name)){
+          $s1 = "Null!! Please Search and Select from the table!";
+        }
+        else{
+          $sql_sub = "UPDATE brgy_address_info SET brgy_Name='$brgy_Name',
+                      citymun_Name='$citymun_Name', province_Name='$province_Name'
+                      WHERE caller_Code='setter'";
+          if (mysqli_query($conn, $sql_sub)) {
+            echo "<script>alert('Successfully Update!  ');
+                                    window.location='index.php';
+                                </script>";  
+        }
+          else {
+            echo "<script>alert('Failed Update!  ');
+                                    window.location='index.php';
+                                </script>";  
+        }
+        }
+
+      }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,41 +120,57 @@ include("../../connection.php");
       $sql = mysqli_query($conn,"SELECT * FROM `brgy_address_info`");
       $brgy_info = mysqli_fetch_array($sql);     
       ?>
-            <form method="POST">
+            <form>
                 <div class="form-group">
 
-                    <label for="pwd"><button class="btn btn-primary pull-right">EDIT</button></label>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">EDIT</button>
+                    
                 </div>
                 <div class="form-group">
                     <label for="pwd">Baragany Name:</label>
-                    <input type="text" class="form-control" id="title" name="brgy_name" disabled="" value="<?php echo $brgy_info[0]?>">
+                    <input type="text" class="form-control" id="title" name="" disabled="" value="<?php echo $brgy_info[0]?>">
                 </div>
                 <div class="form-group">
                     <label for="pwd">Baragany City:</label>
-                    <input type="text" class="form-control" id="title" name="brgy_city" disabled="" value="<?php echo $brgy_info[1]?>">
+                    <input type="text" class="form-control" id="title" name="" disabled="" value="<?php echo $brgy_info[1]?>">
                 </div>
                 <div class="form-group">
                     <label for="pwd">Baragany Province:</label>
-                    <input type="text" class="form-control" id="title" name="brgy_province" disabled="" value="<?php echo $brgy_info[2]?>">
+                    <input type="text" class="form-control" id="title" name="" disabled="" value="<?php echo $brgy_info[2]?>">
                 </div>
             </form>
             <?php
-      $sql = mysqli_query($conn,"SELECT * FROM `ref_logo` ");
+      $sql = mysqli_query($conn,"SELECT * FROM `ref_logo` WHERE logo_ID = 1");
           
       $brgy_logo = mysqli_fetch_array($sql);
-     
+      $sql = mysqli_query($conn,"SELECT * FROM `ref_logo` WHERE logo_ID = 2");
+          
+      $minicpal_logo = mysqli_fetch_array($sql);
+    
       ?>
                 <div class="col-sm-12">
                     <div class="col-sm-6  text-center">
                         <label>Barangay Logo</label>
                         <br>
-                        <form id="form1" runat="server">
+                        <form id="form1" runat="server" method="POST"  enctype="multipart/form-data">
 
                             <div class="form-group">
-                                <input type='file' id="imgInp" class="form-control" />
+                                <input type='file' id="imgInp" class="form-control" name="logo" />
                             </div>
                             <div class="form-group">
-                                <img id="blah" src="../../Img/Icon/logo.png" alt="your image" height="250" width="250" class="img-circle" />
+                    <?php 
+                    if (isset($brgy_logo[1])) {
+                        $img  = $brgy_logo[1];
+                        ?>
+                        <img id="blah1" src="data:image/jpeg;base64,<?php echo base64_encode($img) ?>" alt="your image" height="250" width="250" class="img-circle" />
+                        <?php
+                    } 
+                    else{
+                      ?>
+                      <img id="blah1" src="../../Img/Icon/logo.png" alt="your image" height="250" width="250" class="img-circle" />
+                      <?php
+                    }
+                    ?>
                             </div>
                             <div class="form-group">
                                 <input type="Submit" name="submit-brgypalLogo" class="btn btn-success">
@@ -87,14 +180,26 @@ include("../../connection.php");
                     <div class="col-sm-6 text-center">
                         <label>Municipal Logo</label>
                         <br>
-                        <form id="form1" runat="server">
+                        <form id="form1" runat="server"  method="POST"  enctype="multipart/form-data">
                             <div class="form-group">
 
-                                <input type='file' id="imgInp1" class="form-control" />
+                                <input type='file' id="imgInp1" class="form-control" name="logo" />
                             </div>
                             <div class="form-group">
-
-                                <img id="blah1" src="../../Img/Icon/logo.png" alt="your image" height="250" width="250" class="img-circle" />
+                    <?php 
+                    if (isset($minicpal_logo[1])) {
+                        $img1  = $minicpal_logo[1];
+                        ?>
+                        <img id="blah1" src="data:image/jpeg;base64,<?php echo base64_encode($img1) ?>" alt="your image" height="250" width="250" class="img-circle" />
+                        <?php
+                    } 
+                    else{
+                      ?>
+                      <img id="blah1" src="../../Img/Icon/logo.png" alt="your image" height="250" width="250" class="img-circle" />
+                      <?php
+                    }
+                    ?>
+                                
                             </div>
                             <div class="form-group">
                                 <input type="Submit" name="submit-municipalLogo" class="btn btn-success">
@@ -147,3 +252,42 @@ include("../../connection.php");
 </body>
 
 </html>
+
+<!-- Trigger the modal with a button -->
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Barangay Info</h4>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action=""  enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="pwd">Baragany Name:</label>
+                    <input type="text" class="form-control" id="title" name="brgy_name" value="<?php echo $brgy_info[0]?>">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Baragany City:</label>
+                    <input type="text" class="form-control" id="title" name="brgy_city" value="<?php echo $brgy_info[1]?>">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Baragany Province:</label>
+                    <input type="text" class="form-control" id="title" name="brgy_province"  value="<?php echo $brgy_info[2]?>">
+                </div>
+                <div class="form-group text-center">
+                    <input type="Submit" name="submit-brgyInfo" value="Update" class="btn btn-success">
+                </div>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

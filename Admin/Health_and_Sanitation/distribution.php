@@ -26,9 +26,11 @@ include("../../connection.php");
   <?php 
 
   
-$sql = mysqli_query($conn,"SELECT * From resident_detail rd
-  INNER JOIN resident_pregnant rp ON rp.res_ID= rd.res_ID
-  LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID");
+$sql = mysqli_query($conn,"SELECT * From inventory_drugs_release  idr
+  INNER JOIN resident_detail rd ON idr.res_ID= rd.res_ID 
+  INNER JOIN inventory_drugs ON idr.drug_ID= idr.drug_ID 
+  LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID
+  order by idr.drgrelease_ID");
 
 ?><button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD</button><br><br>
       <table class="table table-bordered " id="accounts">
@@ -36,29 +38,29 @@ $sql = mysqli_query($conn,"SELECT * From resident_detail rd
           <tr>
             <th>No</th>
             <th>Name</th>
-            <th>Date of Conception</th>
-            <th>Date Labor</th>
-            <th>Date Recorded</th>
+            <th>Quantity</th>
+            <th>Resident Name</th>
+            <th>Date Given</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody >
           <?php 
-          while ($preg = mysqli_fetch_array($sql)) {
-            $suffix = $preg['suffix'];
+          while ($distribute = mysqli_fetch_array($sql)) {
+            $suffix = $distribute['suffix'];
             if ($suffix == "N/A") {
               $suffix = "";
             }
             else{
-               $suffix = $preg['suffix'];
+               $suffix = $distribute['suffix'];
             }
            ?>
            <tr>
-            <td><?php echo $preg['preg_ID'] ?></td>
-            <td><?php echo $preg['res_fName']." ".$preg['res_mName'].". ".$preg['res_lName']." ".$suffix ?></td>
-            <td><?php echo $preg['preg_Date'] ?></td>
-            <td><?php echo $preg['preg_Labor'] ?></td>
-            <td><?php echo $preg['preg_Date_Record'] ?></td>
+            <td><?php echo $distribute['drgrelease_ID'] ?></td>
+            <td><?php echo $distribute['drug_Name'] ?></td>
+            <td><?php echo $distribute['drgrelease_Qnty'] ?></td>
+            <td><?php echo $distribute['res_fName']." ".$distribute['res_mName'].". ".$distribute['res_lName']." ".$suffix ?></td>
+            <td><?php echo $distribute['drgrelease_Date_Record'] ?></td>
             <td>
               <div class="btn-group">
                 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>

@@ -1,6 +1,8 @@
 <?php 
 session_start();
-
+// echo '<pre>';
+// var_dump($_SESSION);
+// echo '</pre>';
 ?>
 <html>
     <head>
@@ -138,7 +140,7 @@ td {
                         <th class="action">Create new</th>
 					</tr>
 					<?php
-           $pID= $_SESSION['positionID'];
+           $pID= $_SESSION['position_ID'];
 					
 						$con =  mysqli_connect("localhost", "root", "","bmis_db");
 						$query = "SELECT ref_report.report_Name, ref_report.report_ID FROM `ref_report` INNER JOIN report_list WHERE ref_report.report_ID = report_list.report_ID AND report_list.position_ID = '$pID' ORDER BY ref_report.report_Name";
