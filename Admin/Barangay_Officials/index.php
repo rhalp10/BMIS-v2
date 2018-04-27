@@ -1,6 +1,8 @@
 <?php
 include("../../connection.php");
 session_start();
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +30,7 @@ session_start();
 * {margin: 0; padding: 0;}
 body {
     text-align: center;
+    min-height: 1900px;
   }
 
     </style>
@@ -53,6 +56,8 @@ body {
       </div>
     </nav>
 <div class="container" style="margin-top:120px; ">
+
+    <h1>Barangay Organization Chart</h1>
   <?php 
 $sql =   mysqli_query($conn,"SELECT * FROM `brgy_official_detail` bod 
 INNER JOIN resident_detail rd ON rd.res_ID = bod.res_ID
@@ -132,7 +137,45 @@ $suffix2 = $tre_data['suffix'];
     $treimg = "../../Img/Icon/logo.png";
  
  }
-                
+
+
+$sql = mysqli_query($conn,"SELECT * FROM `brgy_official_detail` bod 
+INNER JOIN resident_detail rd ON rd.res_ID = bod.res_ID
+LEFT JOIN ref_suffixname rs ON rs.suffix_ID = rd.suffix_ID
+LEFT JOIN ref_position rp ON rp.position_ID = bod.commitee_assignID
+WHERE visibility = 1 AND  position_Name LIKE 'Barangay Official%'");       
+
+$count_official = mysqli_num_rows($sql);
+
+$name = array();
+$position_Name = array();
+$official_img = array();
+
+
+while($official_data = mysqli_fetch_array($sql)){
+  $suffix = $official_data['suffix'];
+   if ($suffix == "N/A") {
+     $suffix = "";
+   }
+   else{
+      $suffix = $official_data['suffix'];
+   }
+  $name[] =  $official_data['res_fName'].' '.$official_data['res_mName'].' '.$official_data['res_lName'].' '.$suffix;
+  $position_Name[] = $official_data['position_Name'];
+
+  if (isset($official_data['res_Img'])) {
+    $z  = $official_data['res_Img'];
+    $official_img[] = "data:image/jpeg;base64,".base64_encode($z);
+     
+  } 
+  else{
+    $official_img[] = "../../Img/Icon/logo.png";
+   
+  }
+    
+}
+
+
 ?>
  <script type="text/javascript">
 
@@ -212,50 +255,106 @@ var bigOrganogramData = [
   //  "img": "../common/img/avatar-14.png",
   //  "parent": "4"
   // },
-  {
-    "id": "3.1",
-    "text": "Barangay Officials in Health Center",
-    "width": 250,
-    "title": "Mark Nichols",
-    "img": "../common/img/avatar-7.png",
-    "parent": 3
-  },
-  {
-    "id": "3.1.1",
-    "text": "Programmer",
-    "title": "Sean Parker",
-    "img": "../common/img/avatar-10.png",
-    "parent": 3.1,
-    "open": false
-  },
-  {
-    "id": "3.1.1.1",
-    "text": "Junior",
-    "title": "Laura Alvarez",
-    "img": "../common/img/avatar-8.png",
-    "parent": "3.1.1"
-  },
-  {
-    "id": "3.2",
-    "text": "Team Lead",
-    "title": "Nicholas Cruz",
-    "img": "../common/img/avatar-13.png",
-    "parent": 3
-  },
-  {
-    "id": "3.2.1",
-    "text": "Programmer",
-    "title": "Michael Shaw",
-    "img": "../common/img/avatar-11.png",
-    "parent": "3.2"
-  },
-  {
-    "id": "3.2.1.1",
-    "text": "Junior",
-    "title": "John Flores",
-    "img": "../common/img/avatar-15.png",
-    "parent": "3.2.1"
-  }
+  // {
+  //   "id": "3.1",
+  //   "text": "Barangay Officials in Health Center",
+  //   "width": 250,
+  //   "title": "Mark Nichols",
+  //   "img": "../common/img/avatar-7.png",
+  //   "parent": 3
+  // },
+  // {
+  //   "id": "3.1.1",
+  //   "text": "Programmer",
+  //   "title": "Sean Parker",
+  //   "img": "../common/img/avatar-10.png",
+  //   "parent": 3.1
+  // },
+  // {
+  //   "id": "3.1.1.1",
+  //   "text": "Junior",
+  //   "title": "Laura Alvarez",
+  //   "img": "../common/img/avatar-8.png",
+  //   "parent": "3.1.1"
+  // },
+  // {
+  //   "id": "3.2",
+  //   "text": "Team Lead",
+  //   "title": "Nicholas Cruz",
+  //   "img": "../common/img/avatar-13.png",
+  //   "parent": 3
+  // },
+  // {
+  //   "id": "3.2.1",
+  //   "text": "Programmer",
+  //   "title": "Michael Shaw",
+  //   "img": "../common/img/avatar-11.png",
+  //   "parent": "3.2"
+  // },
+  // {
+  //   "id": "3.2.1.1",
+  //   "text": "Junior",
+  //   "title": "John Flores",
+  //   "img": "../common/img/avatar-15.png",
+  //   "parent": "3.2.1"
+  // },
+  // {
+  //   "id": "3.2.1.1.1",
+  //   "text": "Junior",
+  //   "title": "John Flores",
+  //   "img": "../common/img/avatar-15.png",
+  //   "parent": "3.2.1.1"
+  // }
+  <?php 
+// $name = array();
+// while ($official_data = mysqli_fetch_array($sql)) {
+//  $suffix = $official_data['suffix'];
+//  if ($suffix == "N/A") {
+//    $suffix = "";
+//  }
+//  else{
+//     $suffix = $official_data['suffix'];
+//  }
+//   $name[] =  $official_data['res_fName'].' '.$official_data['res_mName'].' '.$official_data['res_lName'].' '.$suffix;;
+// }
+
+function loop(array $parents, $need,$index,$name,$position_Name,$official_img)
+{
+    
+    $children = [];
+    $isLast = $need === 1;
+    $lastKey = count($parents) - 1;
+    
+    foreach ($parents as $key => $parent) {
+        $p_name = $name[$index];
+        $pos_Name = $position_Name[$index];
+        $img = $official_img[$index];
+        $id = $parent === 3 ? $key + 1 : 1;
+        $children[] = $child = "$parent.$id";
+        $comma = $isLast && $key === $lastKey ? '' : ',';
+        echo "{
+        \"id\":\"$child\",
+        \"text\": \"$pos_Name\",
+        \"title\": \"$p_name\",
+        \"width\": 350,
+        \"img\": \"$img\",
+        \"parent\":\"$parent\"
+         }$comma";
+    }
+    $index++;
+    $need--;
+
+    if ($need) {
+        return loop($children, $need,$index,$name,$position_Name,$official_img);
+    }
+
+    return $children;
+}
+
+$index = 0;
+loop([3], $count_official,$index,$name,$position_Name,$official_img);
+  ?>
+
 ];
 
 </script>
@@ -263,12 +362,12 @@ var bigOrganogramData = [
     var diagram = new dhx.Diagram(document.body, { 
       type: "org",
       defaultShapeType: "img-card",
-      scale : 0.8
+      scale : 0.9
     });
     diagram.data.parse(bigOrganogramData);
+
   </script>
 </div>
-
 
 
 

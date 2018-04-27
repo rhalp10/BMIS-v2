@@ -38,7 +38,7 @@ var smallOrganogramData = [
 var bigOrganogramData = [
 	{
 		"id": "1",
-		"text": "Barangay Captain",
+		"text": <?php echo 'Barangay Captain'?>,
 		"title": "Henry Bennett",
 		"img": "../common/img/avatar-1.png"
 	},

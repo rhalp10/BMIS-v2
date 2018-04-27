@@ -1,4 +1,3 @@
-
 <html>
 <title>Admin Panel</title>
 <link rel="shortcut icon" href="../Img/Icon/indang logo.png">

@@ -162,12 +162,12 @@ include("../../connection.php");
                     if (isset($brgy_logo[1])) {
                         $img  = $brgy_logo[1];
                         ?>
-                        <img id="blah1" src="data:image/jpeg;base64,<?php echo base64_encode($img) ?>" alt="your image" height="250" width="250" class="img-circle" />
+                        <img id="blah" src="data:image/jpeg;base64,<?php echo base64_encode($img) ?>" alt="your image" height="250" width="250" class="img-circle" />
                         <?php
                     } 
                     else{
                       ?>
-                      <img id="blah1" src="../../Img/Icon/logo.png" alt="your image" height="250" width="250" class="img-circle" />
+                      <img id="blah" src="../../Img/Icon/logo.png" alt="your image" height="250" width="250" class="img-circle" />
                       <?php
                     }
                     ?>
