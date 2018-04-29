@@ -24,7 +24,7 @@ if (isset($_POST['submit'])) {
 			$password = mysqli_real_escape_string($conn,$password);
 
 			// SQL query to fetch information of registerd users and finds user match.
-			$query = mysqli_query($conn,"SELECT * FROM `user_account` WHERE `acc_username` = '$username'");
+			$query = mysqli_query($conn,"SELECT * FROM `user_account` WHERE `acc_username` = '$username' AND `status_ID` = 1");
 			$data = mysqli_fetch_array($query);
 
 			if(isset($data['acc_password']))
