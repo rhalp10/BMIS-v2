@@ -21,7 +21,7 @@ LEFT JOIN ref_occupation_status ros ON rd.occuStat_ID = ros.occuStat_ID
 LEFT JOIN ref_country rc ON rd.country_ID = rc.country_ID  WHERE rd.res_ID = $id");
 $resident = mysqli_fetch_array($sql)
 ?>
-<form method="POST" runat="server" action="<?php htmlspecialchars(" PHP_SELF ");?>" enctype="multipart/form-data" >
+<form method="POST" runat="server" action="action" enctype="multipart/form-data" >
 
     <div class="modal-body">
         <div class="col-lg-offset-4" id="image-holder">
@@ -364,7 +364,7 @@ $resident = mysqli_fetch_array($sql)
             <p>
                 <center>
                     <a href="profile.php">
-                        <input type="submit" name="insert" id="insert" value="Update" class="btn btn-info" /> </a>
+                        <input type="submit" name="Update" id="" value="Update-resident" class="btn btn-info" /> </a>
                 </center>
             </p>
 
