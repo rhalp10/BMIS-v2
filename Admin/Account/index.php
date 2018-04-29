@@ -42,20 +42,22 @@ include("../../connection.php");
   <?php 
 
   
-$sql = mysqli_query($conn,"SELECT ua.acc_ID,bod.official_ID,rd.res_fName,rd.res_mName,rd.res_lName,rs.suffix,ua.acc_username,ua.acc_password,us.status_Name FROM `user_account` ua 
-INNER JOIN brgy_official_detail bod ON ua.official_ID = bod.official_ID 
-INNER JOIN resident_detail rd ON bod.res_ID = rd.res_ID 
+$sql = mysqli_query($conn,"SELECT ua.acc_ID,bod.official_ID,rd.res_fName,rd.res_mName,rd.res_lName,rs.suffix,ua.acc_username,ua.acc_password,us.status_Name,us.status_ID,rp.position_Name FROM `user_account` ua 
+LEFT JOIN brgy_official_detail bod ON ua.official_ID = bod.official_ID 
+LEFT JOIN resident_detail rd ON bod.res_ID = rd.res_ID 
+LEFT JOIN ref_position rp ON rp.position_ID = ua.position_ID
 LEFT JOIN ref_suffixname rs ON rd.suffix_ID = rs.suffix_ID
-INNER JOIN user_status us ON ua.status_ID = us.status_ID");
+LEFT JOIN user_status us ON ua.status_ID = us.status_ID");
 
 ?>
-<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD</button><br><br>
+<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD ACCOUNT</button><br><br>
       <table class="table table-bordered " id="accounts">
         <thead class="bg-primary">
           <tr>
             <th>Name</th>
             <th>Username</th>
             <th>Password</th>
+            <th>Level Access</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -70,12 +72,21 @@ INNER JOIN user_status us ON ua.status_ID = us.status_ID");
             else{
                $suffix = $acc_data['suffix'];
             }
-           ?>
-           <tr>
+            if ($acc_data['status_ID'] == 2) {
+              $color = "danger";
+              $td_color = "class=bg-danger";
+            }
+            else{
+              $color = "success";
+              $td_color = "";
+            }
+            ?>
+           <tr <?php echo $td_color?>>
             <td><?php echo $acc_data['res_fName']." ".$acc_data['res_mName'].". ".$acc_data['res_lName']." ".$suffix ?></td>
             <td><?php echo $acc_data['acc_username'] ?></td>
             <td><?php echo $acc_data['acc_password'] ?></td>
-            <td><span class="label label-success"><?php echo $acc_data['status_Name']?></span></td>
+            <td><?php echo $acc_data['position_Name'] ?></td>
+            <td><span class="label label-<?php echo $color ?>"><?php echo $acc_data['status_Name']?></span></td>
             <td>
               <div class="btn-group">
                 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>
@@ -83,9 +94,22 @@ INNER JOIN user_status us ON ua.status_ID = us.status_ID");
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li><a  data-toggle="modal" data-target="#view" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="view_acc">View</a></li>
+                 <!--  <li><a  data-toggle="modal" data-target="#view" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="view_acc">View</a></li> -->
                   <li><a data-toggle="modal" data-target="#edit" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="edit_acc">Edit</a></li>
-                  <li><a data-toggle="modal" data-target="#delete" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="delete_acc">Delete</a></li>
+                  <!-- <li><a data-toggle="modal" data-target="#delete" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="delete_acc">Delete</a></li> -->
+                  <?php 
+                  if ($acc_data['status_ID'] == 2) {
+              
+                    ?>
+                    <li><a data-toggle="modal" data-target="#enable" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="enable_acc">Enable</a></li>
+                    <?php
+                  }
+                  else{
+                    ?>
+                    <li><a data-toggle="modal" data-target="#disable" data-id="<?php echo $acc_data['acc_ID']; ?>"  id="disable_acc">Disable</a></li>
+                    <?php
+                  }
+                  ?>
                 </ul>
               </div>
             </td>
@@ -160,30 +184,58 @@ $(document).ready( function () {
       
     });
 
-       $(document).on('click', '#delete_acc', function(e){
+       $(document).on('click', '#disable_acc', function(e){
       
       e.preventDefault();
       
       var uid = $(this).data('id');   // it will get id of clicked row
       
-      $('#delete-content').html(''); // leave it blank before ajax call
-      $('#delete-loader').show();      // load ajax loader
+      $('#disable-content').html(''); // leave it blank before ajax call
+      $('#disable-loader').show();      // load ajax loader
       
       $.ajax({
-        url: 'modal_delete.php',
+        url: 'modal_disable.php',
         type: 'POST',
         data: 'id='+uid,
         dataType: 'html'
       })
       .done(function(data){
         console.log(data);  
-        $('#delete-content').html('');    
-        $('#delete-content').html(data); // load response 
-        $('#delete-loader').hide();      // hide ajax loader 
+        $('#disable-content').html('');    
+        $('#disable-content').html(data); // load response 
+        $('#disable-loader').hide();      // hide ajax loader 
       })
       .fail(function(){
-        $('#delete-content').html('<i class="glyphicon glyphicon-info-sign"></i> Something went wrong, Please try again...');
-        $('#delete-loader').hide();
+        $('#disable-content').html('<i class="glyphicon glyphicon-info-sign"></i> Something went wrong, Please try again...');
+        $('#disable-loader').hide();
+      });
+      
+    });
+
+        $(document).on('click', '#enable_acc', function(e){
+      
+      e.preventDefault();
+      
+      var uid = $(this).data('id');   // it will get id of clicked row
+      
+      $('#enable-content').html(''); // leave it blank before ajax call
+      $('#enable-loader').show();      // load ajax loader
+      
+      $.ajax({
+        url: 'modal_enable.php',
+        type: 'POST',
+        data: 'id='+uid,
+        dataType: 'html'
+      })
+      .done(function(data){
+        console.log(data);  
+        $('#enable-content').html('');    
+        $('#enable-content').html(data); // load response 
+        $('#enable-loader').hide();      // hide ajax loader 
+      })
+      .fail(function(){
+        $('#enable-content').html('<i class="glyphicon glyphicon-info-sign"></i> Something went wrong, Please try again...');
+        $('#enable-loader').hide();
       });
       
     });
@@ -244,21 +296,44 @@ $(document).ready( function () {
 </div>
 
 <!-- Modal -->
-<div id="delete" class="modal fade" role="dialog">
+<div id="disable" class="modal fade" role="dialog">
   <div class="modal-dialog modal-lg">
 
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header  bg-danger">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Account</h4>
+        <h4 class="modal-title">Disable Account</h4>
       </div>
       <div class="modal-body">
-        <div id="delete-loader" style="display: none; text-align: center;">
+        <div id="disable-loader" style="display: none; text-align: center;">
             <img src="assets/img/ajax-loader.gif">
         </div>
         <!-- content will be load here -->                          
-        <div id="delete-content"></div>
+        <div id="disable-content"></div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Modal -->
+<div id="enable" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header  bg-danger">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enable Account</h4>
+      </div>
+      <div class="modal-body">
+        <div id="enable-loader" style="display: none; text-align: center;">
+            <img src="assets/img/ajax-loader.gif">
+        </div>
+        <!-- content will be load here -->                          
+        <div id="enable-content"></div>
       </div>
       <div class="modal-footer">
       </div>
@@ -277,11 +352,11 @@ $(document).ready( function () {
         <h4 class="modal-title">Add Account</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" action= "accountinsert.php" method="post">
+        <form class="form-horizontal" action= "action.php" method="post">
          <div class="form-group">
         <label class="col-sm-2 control-label">Fullname</label>
         <div class="col-sm-10">
-          <select name="fullname" class="form-control">
+          <select name="official_ID" class="form-control">
           
             <?php
             $rp=mysqli_query($conn,"SELECT * FROM `brgy_official_detail` bod 
@@ -298,7 +373,7 @@ WHERE  visibility = 1");
             else{
                $suffix = $row['suffix'];
             }
-              ?><option><?php echo $row[8]." ".$row[9]." ".$row[10]." ".$suffix;?></option>
+              ?><option value="<?php echo  $row['res_ID']?>"><?php echo $row[8]." ".$row[9]." ".$row[10]." ".$suffix;?></option>
             <?php
             }
             ?>
@@ -330,13 +405,13 @@ WHERE  visibility = 1");
       <div class="form-group">
         <label class="col-sm-2 control-label">Position</label>
         <div class="col-sm-10">
-          <select name="committee" class="form-control">
+          <select class="form-control" id="mySelect" onchange="myFunction()" name="position">
           
             <?php
             $rp=mysqli_query($conn,"SELECT * FROM ref_position WHERE position_ID != 1 AND position_Name NOT LIKE 'Barangay Official in %'");
             while ($row=mysqli_fetch_array($rp))
             {
-              ?><option><?php echo $row[1];?></option>
+              ?><option value="<?php echo $row[0] ?>"><?php echo $row[1];?></option>
             <?php
             }
             ?>
@@ -346,16 +421,16 @@ WHERE  visibility = 1");
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="official">
         <label class="col-sm-2 control-label">Committee</label>
         <div class="col-sm-10">
-          <select name="committee" class="form-control">
-          
+          <select name="Commitee" class="form-control">
+            <option value="1" style="display: none;"></option>
             <?php
             $rp=mysqli_query($conn,"SELECT * FROM ref_position WHERE position_ID != 1 AND position_Name LIKE 'Barangay Official in %'");
             while ($row=mysqli_fetch_array($rp))
             {
-              ?><option><?php echo $row[1];?></option>
+              ?><option value="<?php echo $row[0] ?>"><?php echo $row[1];?></option>
             <?php
             }
             ?>
@@ -366,7 +441,7 @@ WHERE  visibility = 1");
       </div>
     <div class="form-group"> 
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-success" name="submit">Add New</button>
+          <button type="submit" class="btn btn-success" name="submit-account">Add New</button>
         </div>
       </div>
        </form>
@@ -378,3 +453,20 @@ WHERE  visibility = 1");
 
   </div>
 </div>
+
+<script type="text/javascript">
+  
+
+
+  $('#official').hide();
+    function myFunction() {
+      var x = document.getElementById("mySelect").value;
+      if(x == 10){
+       $('#official').show();
+      }
+      else{
+
+       $('#official').hide();
+      }
+    }
+</script>
