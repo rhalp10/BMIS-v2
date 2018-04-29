@@ -50,7 +50,7 @@ body {
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class=""><a href="index">Manage Officials</a></li>
+            <li class=""><a href="officials">Manage Officials</a></li>
           </ul>
         </div>
       </div>
