@@ -1,3 +1,7 @@
+<?php
+session_start();
+require_once('../connection.php');
+?>
 <html>
 <title>Admin Panel</title>
 <link rel="shortcut icon" href="../Img/Icon/indang logo.png">
