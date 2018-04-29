@@ -14,6 +14,6 @@ $login_session =$row['acc_ID'];
 
 if(!isset($login_session)){
 	mysqli_close($connection); // Closing Connection
-	header('Location: ../index.php'); // Redirecting To Home Page
+	echo '<script>top.location = "../index"; </script>'; // Redirecting To Home Page
 }
 ?>
