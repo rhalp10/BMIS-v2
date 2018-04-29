@@ -35,14 +35,14 @@ LEFT JOIN ref_position rp  ON rp.position_ID = ar.receiver_ID");
 while ($ann = mysqli_fetch_array($sql)) {
  ?>
 <div class="box effect1">
-    <p><?php echo strtoupper($ann[2])."[ ".$ann[6]." ] (".date("M jS, Y", strtotime($ann[5])).")";?></p>
+    <p><?php echo strtoupper($ann[2])."[ ".$ann[6]." ] (".date("M jS, Y", strtotime($ann[5])).")";?></p> <button class="pull-right" style="margin-top: -20px;"><span class="glyphicon glyphicon-edit"></span></button>
  <hr>
   <p style=" text-indent: 50px; white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;"><?php echo ucwords($ann[3]) ?></p>
 
 
-<button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#announment" data-id="<?php echo $ann[0]; ?>" id="view">View more</button>
+<button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#announment" data-id="<?php echo $ann[0]; ?>" id="view" style="margin-bottom: -50px;">View more</button>
 </div>
  <?php
 }
