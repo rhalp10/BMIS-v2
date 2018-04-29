@@ -47,7 +47,7 @@ LEFT JOIN brgy_official_detail bod ON ua.official_ID = bod.official_ID
 LEFT JOIN resident_detail rd ON bod.res_ID = rd.res_ID 
 LEFT JOIN ref_position rp ON rp.position_ID = ua.position_ID
 LEFT JOIN ref_suffixname rs ON rd.suffix_ID = rs.suffix_ID
-LEFT JOIN user_status us ON ua.status_ID = us.status_ID");
+LEFT JOIN user_status us ON ua.status_ID = us.status_ID ORDER BY ua.status_ID ASC");
 
 ?>
 <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add">ADD ACCOUNT</button><br><br>
@@ -65,6 +65,8 @@ LEFT JOIN user_status us ON ua.status_ID = us.status_ID");
         <tbody >
           <?php 
           while ($acc_data = mysqli_fetch_array($sql)) {
+
+            $crypt = crypt("Darren",$acc_data['acc_password']);
             $suffix = $acc_data['suffix'];
             if ($suffix == "N/A") {
               $suffix = "";
@@ -84,7 +86,7 @@ LEFT JOIN user_status us ON ua.status_ID = us.status_ID");
            <tr <?php echo $td_color?>>
             <td><?php echo $acc_data['res_fName']." ".$acc_data['res_mName'].". ".$acc_data['res_lName']." ".$suffix ?></td>
             <td><?php echo $acc_data['acc_username'] ?></td>
-            <td><?php echo $acc_data['acc_password'] ?></td>
+            <td><?php echo $crypt ?></td>
             <td><?php echo $acc_data['position_Name'] ?></td>
             <td><span class="label label-<?php echo $color ?>"><?php echo $acc_data['status_Name']?></span></td>
             <td>
@@ -116,6 +118,7 @@ LEFT JOIN user_status us ON ua.status_ID = us.status_ID");
           </tr>
            <?php
           }
+
           ?>
           
         </tbody>
@@ -124,7 +127,9 @@ LEFT JOIN user_status us ON ua.status_ID = us.status_ID");
 
 <script type="text/javascript">
 $(document).ready( function () {
-    $('#accounts').DataTable();
+    $('#accounts').DataTable({
+      "aaSorting": []
+    });
 } );
 
 
