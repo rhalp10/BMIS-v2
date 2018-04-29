@@ -15,6 +15,16 @@ $ann_description = $_POST['ann_description'];
 }
 if (isset($_POST['send-sms'])) {
 	include "smsGateway.php";
+	function Success_Alert(){
+		echo "<script>alert('Successfully Send SMS	');
+									window.location='index.php';
+								</script>";
+	}
+	function Error_Alert(){
+		echo "<script>alert('Error Send SMS	');
+									window.location='index.php';
+								</script>";
+	}
 	$id  = $_POST['id'];
 	$SMS  = $_POST['SMS'];
 	mysqli_query($conn,"UPDATE `anouncement_raw` SET `ann_detail_sms_format` = '$SMS' WHERE `anouncement_raw`.`ann_ID` = $id");
@@ -25,6 +35,7 @@ if (isset($_POST['send-sms'])) {
 
 	$smsGateway = new SmsGateway('rhalpdarrencabrera@gmail.com', 'zxc123');
 	$deviceID = 82979;
+
 	//Barangay Resident
 	if ($receiver_type == 1) {
 		$sql = mysqli_query($conn,"SELECT contact_telnum,contact_ID,rd.*,rs.* FROM 
@@ -37,7 +48,8 @@ if (isset($_POST['send-sms'])) {
 			$res_ID  = $contact['res_ID'];
 			$contact_telnum = $contact['contact_telnum'];
 			$contact_ID = $contact['contact_ID'];
-			mysqli_query($conn,"INSERT INTO `sms` (`id`, `contact_ID`, `ann_ID`, `receiver_ID`, `date`) VALUES (NULL, '$contact_ID', '$id', '$res_ID', CURRENT_TIMESTAMP);");
+			mysqli_query($conn,"INSERT INTO `sms` (`id`, `contact_ID`, `ann_ID`, `receiver_ID`, `date`) 
+				VALUES (NULL, '$contact_ID', '$id', '$res_ID', CURRENT_TIMESTAMP);");
 			$receiver[] = $contact_telnum;
 		}
 		
@@ -51,13 +63,17 @@ if (isset($_POST['send-sms'])) {
 
 		//Please note options is no required and can be left out
 		$result = $smsGateway->sendMessageToManyNumbers($numbers, $message, $deviceID, $options);
+		Success_Alert();
 	}
-		
+	else{
+		 Error_Alert();
+	}
+
+	
 
 	//if resident
-echo "<script>alert('Successfully Send SMS	');
-									window.location='index.php';
-								</script>";
+	
+
 // 	SELECT rd.res_fName,rd.res_mName,rd.res_mName,rs.suffix,rn.network_Name,rpp.position_Name,rc.contact_telnum  FROM `brgy_official_detail`  bod
 // INNER JOIN resident_detail rd ON bod.res_ID = rd.res_ID 
 // LEFT JOIN ref_suffixname rs ON rd.suffix_ID = rs.suffix_ID
