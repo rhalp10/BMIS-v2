@@ -289,17 +289,17 @@ var ctx = document.getElementById("myChart").getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'pie',
     data: {
-        labels: ["Total Residents",
-         "Maternal and Newborn'",
-          "Babies",
-           "Toddlers",
-            "Preschoolers",
-             "School Age Children",
-              "Tweens",
-               "Teenager",
-                "Young Adult",
-                 "Middle-Aged Adults",
-                  "Senior"],
+        labels: ["Total Residents [<?php echo $Total_resident;?>]",
+         "Maternal and Newborn [<?php echo $Total_NewBorn;?>]",
+          "Babies [<?php echo $Total_Babies;?>]",
+           "Toddlers [<?php echo $Total_Toddlers;?>]",
+            "Preschoolers [<?php echo $Total_Preschoolers;?>]",
+             "School Age Children [<?php echo $Total_SAC;?>]",
+              "Tweens [<?php echo $Total_Tweens;?>]",
+               "Teenager [<?php echo $Total_Teenager;?>]",
+                "Young Adult [<?php echo $Total_Young_Adult;?>]",
+                 "Middle-Aged Adults [<?php echo $Total_MiddleAged;?>]",
+                  "Senior [<?php echo $Total_Senior;?>]"],
         datasets: [{
             label: '# of Votes',
             data: [
